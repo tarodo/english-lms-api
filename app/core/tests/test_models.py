@@ -8,10 +8,13 @@ class ModelTests(TestCase):
         """Test creating a new user with an Telegram ID is successful"""
         tg_id = '112233'
         user = get_user_model().objects.create_user(
-            tg_id=tg_id
+            tg_id=tg_id,
+            is_staff=True,
+            is_teacher=True
         )
 
         self.assertEqual(user.tg_id, tg_id)
+        self.assertEqual(user.is_teacher, True)
 
     def test_create_new_superuser(self):
         """Test creating a new superuser"""

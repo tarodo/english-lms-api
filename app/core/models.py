@@ -25,12 +25,14 @@ class UserManager(BaseUserManager):
 
 class User(AbstractBaseUser, PermissionsMixin):
     """Custom user model supports Telegram ID instead of username"""
-    tg_id = models.CharField(max_length=255, unique=True)
-    name = models.CharField(max_length=255)
-    sur_name = models.CharField(max_length=255)
-    tg_name = models.CharField(max_length=255)
+    tg_id = models.CharField(max_length=255, unique=True, default='')
+    first_name = models.CharField(max_length=255, default='')
+    second_name = models.CharField(max_length=255, default='')
+    username = models.CharField(max_length=255, default='')
+    language_code = models.CharField(max_length=255, default='')
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
+    is_teacher = models.BooleanField(default=False)
 
     objects = UserManager()
 
