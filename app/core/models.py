@@ -14,7 +14,7 @@ class UserManager(BaseUserManager):
         return user
 
     def create_superuser(self, tg_id):
-        """Creates and saves a new super user"""
+        """Creates and saves a new superuser"""
         user = self.create_user(tg_id)
         user.is_staff = True
         user.is_superuser = True
