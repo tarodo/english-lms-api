@@ -5,36 +5,33 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, \
 
 class UserManager(BaseUserManager):
 
-    def create_user(self, tg_id, **extra_fields):
+    def create_user(self, email, password=None, **extra_fields):
         """Creates and saves a new user"""
-        user = self.model(tg_id=tg_id, **extra_fields)
-        user.set_unusable_password()
+        if not email:
+            raise ValueError('Users must have an email address')
+        user = self.model(email=self.normalize_email(email), **extra_fields)
+        user.set_password(password)
         user.save(using=self._db)
 
         return user
 
-    def create_superuser(self, tg_id, **extra_fields):
+    def create_superuser(self, email):
         """Creates and saves a new superuser"""
-        user = self.create_user(tg_id, **extra_fields)
+        user = self.create_user(email)
         user.is_staff = True
         user.is_superuser = True
-        user.set_password(extra_fields['password'])
         user.save(using=self._db)
 
         return user
 
 
 class User(AbstractBaseUser, PermissionsMixin):
-    """Custom user model supports Telegram ID instead of username"""
-    tg_id = models.CharField(max_length=255, unique=True, default='')
-    first_name = models.CharField(max_length=255, default='')
-    second_name = models.CharField(max_length=255, default='')
-    username = models.CharField(max_length=255, default='')
-    language_code = models.CharField(max_length=255, default='')
+    """Custom user model supports email instead of username"""
+    email = models.EmailField(max_length=255, unique=True)
+    name = models.CharField(max_length=255, default='')
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
-    is_teacher = models.BooleanField(default=False)
 
     objects = UserManager()
 
-    USERNAME_FIELD = 'tg_id'
+    USERNAME_FIELD = 'email'

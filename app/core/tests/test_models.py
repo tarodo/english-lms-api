@@ -4,17 +4,22 @@ from django.contrib.auth import get_user_model
 
 class ModelTests(TestCase):
 
-    def test_create_user_with_tgid_successful(self):
-        """Test creating a new user with an Telegram ID is successful"""
-        tg_id = '112233'
+    def test_create_user_with_username_successful(self):
+        """Test creating a new user with an email is successful"""
+        email = 'bot1@yaya.ru'
+        password = 'test123'
         user = get_user_model().objects.create_user(
-            tg_id=tg_id,
-            is_staff=True,
-            is_teacher=True
+            email=email,
+            password=password
         )
 
-        self.assertEqual(user.tg_id, tg_id)
-        self.assertEqual(user.is_teacher, True)
+        self.assertEqual(user.email, email)
+        self.assertTrue(user.check_password(password))
+
+    def test_new_user_invalid_email(self):
+        """Test creating with no email reises error"""
+        with self.assertRaises(ValueError):
+            get_user_model().objects.create_user(None, 'test123')
 
     def test_create_new_superuser(self):
         """Test creating a new superuser"""
