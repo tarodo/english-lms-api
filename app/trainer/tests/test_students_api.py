@@ -62,3 +62,21 @@ class PrivateStudentsApiTests(TestCase):
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(len(res.data), 2)
+
+    def test_create_student_successful(self):
+        """Tset creating a new student"""
+        payload = {'tg_id': '11111', 'username': 'roman'}
+        self.client.post(STUDENTS_URL, payload)
+
+        exists = Student.objects.filter(
+            user=self.user,
+            tg_id=payload['tg_id']
+        ).exists()
+        self.assertTrue(exists)
+
+    def test_create_student_invalid(self):
+        """Test creating a new student with invalid payload"""
+        payload = {'tg_id': ''}
+        res = self.client.post(STUDENTS_URL, payload)
+
+        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
