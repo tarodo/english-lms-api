@@ -44,3 +44,16 @@ class ModelTests(TestCase):
         )
 
         self.assertEqual(str(student), student.tg_id)
+
+    def test_word_str(self):
+        """Test the word representation"""
+        student = models.Student.objects.create(
+            user=sample_user(),
+            tg_id='123123123'
+        )
+        word = models.Word.objects.create(
+            word='test',
+            student=student
+        )
+
+        self.assertEqual(str(word), word.word)

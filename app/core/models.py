@@ -55,3 +55,18 @@ class Student(models.Model):
 
     def __str__(self):
         return self.tg_id
+
+
+class Word(models.Model):
+    """Word for students"""
+    word = models.CharField(max_length=255)
+    translate = models.TextField(default='')
+    definition = models.TextField(default='')
+    example = models.TextField(default='')
+    student = models.ForeignKey(
+        Student,
+        on_delete=models.CASCADE,
+    )
+
+    def __str__(self):
+        return self.word
