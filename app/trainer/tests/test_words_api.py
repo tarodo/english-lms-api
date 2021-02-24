@@ -46,7 +46,8 @@ class PrivateWordsApiTests(TestCase):
         Word.objects.create(student=self.student, word='test')
         Word.objects.create(student=self.student, word='equipment')
 
-        res = self.client.get(WORD_URL)
+        res = self.client.get(WORD_URL,
+                              {'student': self.student.id})
 
         words = Word.objects.all().order_by('-word')
         serializer = WordSerializer(words, many=True)
@@ -69,3 +70,43 @@ class PrivateWordsApiTests(TestCase):
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(len(res.data), 1)
         self.assertEqual(res.data[0]['word'], word.word)
+
+    def test_create_word_successful(self):
+        """Test create a new word"""
+        payload = {'word': 'test', 'student': self.student.id}
+        res = self.client.post(WORD_URL, payload)
+        self.assertEqual(res.status_code, status.HTTP_201_CREATED)
+
+        exists = Word.objects.filter(
+            word=payload['word'],
+            student=payload['student']
+        ).exists()
+        self.assertTrue(exists)
+
+    def test_create_word_successful_limited_to_student(self):
+        """Test create a new word from several student"""
+        student2 = Student.objects.create(
+            user=self.user,
+            tg_id='11111'
+        )
+        payload = {'word': 'test', 'student': self.student.id}
+        self.client.post(WORD_URL, payload)
+        payload = {'word': 'test', 'student': student2.id}
+        self.client.post(WORD_URL, payload)
+
+        res = self.client.get(WORD_URL)
+        self.assertEqual(len(res.data), 2)
+
+    def test_create_word_invalid(self):
+        """Test creating invalid word fails"""
+        payload = {'word': '', 'student': self.student.id}
+        res = self.client.post(WORD_URL, payload)
+
+        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_create_word_student_invalid(self):
+        """Test creating invalid word fails"""
+        payload = {'word': 'test', 'student': '1321313'}
+        res = self.client.post(WORD_URL, payload)
+
+        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)

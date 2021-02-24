@@ -21,7 +21,9 @@ class StudentViewSet(viewsets.GenericViewSet,
         serializer.save(user=self.request.user)
 
 
-class WordViewSet(viewsets.GenericViewSet, mixins.ListModelMixin):
+class WordViewSet(viewsets.GenericViewSet,
+                  mixins.ListModelMixin,
+                  mixins.CreateModelMixin):
     """Manage words in the database"""
     authentication_classes = (TokenAuthentication, )
     permission_classes = (IsAuthenticated, )
@@ -41,3 +43,7 @@ class WordViewSet(viewsets.GenericViewSet, mixins.ListModelMixin):
             queryset = queryset.filter(student__id=student_id)
 
         return queryset
+
+    def perform_create(self, serializer):
+        """Create a new word"""
+        serializer.save()
