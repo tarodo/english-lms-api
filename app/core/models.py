@@ -46,7 +46,7 @@ class Student(models.Model):
     last_name = models.CharField(max_length=255, default='')
     username = models.CharField(max_length=255, default='')
     language_code = models.CharField(max_length=64, default='')
-    is_student = models.BooleanField(default=False)
+    is_student = models.BooleanField(default=True)
     is_teacher = models.BooleanField(default=False)
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
@@ -60,9 +60,9 @@ class Student(models.Model):
 class Word(models.Model):
     """Word for students"""
     word = models.CharField(max_length=255)
-    translate = models.TextField(default='')
-    definition = models.TextField(default='')
-    example = models.TextField(default='')
+    translate = models.TextField(blank=True)
+    definition = models.TextField(blank=True)
+    example = models.TextField(blank=True)
     student = models.ForeignKey(
         Student,
         on_delete=models.CASCADE,
@@ -70,3 +70,16 @@ class Word(models.Model):
 
     def __str__(self):
         return self.word
+
+
+class WordSet(models.Model):
+    """Set for words"""
+    name = models.CharField(max_length=255)
+    student = models.ForeignKey(
+        Student,
+        on_delete=models.CASCADE,
+    )
+    words = models.ManyToManyField('Word')
+
+    def __str__(self):
+        return self.name

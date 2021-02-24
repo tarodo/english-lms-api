@@ -57,3 +57,16 @@ class ModelTests(TestCase):
         )
 
         self.assertEqual(str(word), word.word)
+
+    def test_word_set_str(self):
+        """Test the set string representation"""
+        student = models.Student.objects.create(
+            user=sample_user(),
+            tg_id='123123123'
+        )
+        word_set = models.WordSet.objects.create(
+            name='First set',
+            student=student
+        )
+
+        self.assertEqual(str(word_set), word_set.name)

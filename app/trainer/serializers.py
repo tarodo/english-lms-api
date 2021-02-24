@@ -18,5 +18,6 @@ class WordSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Word
-        fields = ('id', 'word', 'translate', 'definition', 'example', 'student')
+        fields = ('id', 'word', 'translate', 'definition',
+                  'example', 'student')
         read_only = ('id',)
