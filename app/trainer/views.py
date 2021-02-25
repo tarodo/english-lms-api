@@ -59,9 +59,16 @@ class WordSetViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         """Retrieve the word sets for the student"""
         student = self.request.query_params.get('student')
-        queryset = self.queryset
+        queryset = self.queryset.order_by('id')
         if student:
             student_id = int(student)
             queryset = queryset.filter(student__id=student_id)
 
         return queryset
+
+    def get_serializer_class(self):
+        """Return appropriate serializer class"""
+        if self.action == 'retrieve':
+            return serializers.WordSetDetailSerializer
+
+        return self.serializer_class

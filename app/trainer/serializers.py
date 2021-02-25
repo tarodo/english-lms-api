@@ -34,3 +34,8 @@ class WordSetSerializer(serializers.ModelSerializer):
         model = WordSet
         fields = ('id', 'name', 'student', 'words')
         read_only = ('id', )
+
+
+class WordSetDetailSerializer(WordSetSerializer):
+    """Serializer a word set detail"""
+    words = WordSerializer(many=True, read_only=True)

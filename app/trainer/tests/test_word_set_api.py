@@ -5,12 +5,22 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APIClient
 
-from core.models import WordSet, Student
+from core.models import WordSet, Student, Word
 
-from trainer.serializers import WordSetSerializer
+from trainer.serializers import WordSetSerializer, WordSetDetailSerializer
 
 
 WORD_SET_URL = reverse('trainer:wordset-list')
+
+
+def detail_url(word_set_id):
+    """Retunr word set detail URL"""
+    return reverse('trainer:wordset-detail', args=[word_set_id])
+
+
+def sample_word(student, word='voyage'):
+    """Create and return a sample word"""
+    return Word.objects.create(student=student, word=word)
 
 
 def sample_word_set(student, **params):
@@ -79,4 +89,15 @@ class PrivateWordSetApiTest(TestCase):
         serializer = WordSetSerializer(word_sets, many=True)
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(len(res.data), 1)
+        self.assertEqual(res.data, serializer.data)
+
+    def test_view_word_set_detail(self):
+        """Test viewing a word set detail"""
+        word_set = sample_word_set(student=self.student)
+        word_set.words.add(sample_word(student=self.student))
+
+        url = detail_url(word_set.id)
+        res = self.client.get(url)
+
+        serializer = WordSetDetailSerializer(word_set)
         self.assertEqual(res.data, serializer.data)
