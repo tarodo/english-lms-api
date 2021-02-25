@@ -2,7 +2,7 @@ from rest_framework import viewsets, mixins
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 
-from core.models import Student, Word
+from core.models import Student, Word, WordSet
 
 from trainer import serializers
 
@@ -47,3 +47,21 @@ class WordViewSet(viewsets.GenericViewSet,
     def perform_create(self, serializer):
         """Create a new word"""
         serializer.save()
+
+
+class WordSetViewSet(viewsets.ModelViewSet):
+    """Manage word sets in the database"""
+    serializer_class = serializers.WordSetSerializer
+    queryset = WordSet.objects.all()
+    authentication_classes = (TokenAuthentication, )
+    permission_classes = (IsAuthenticated, )
+
+    def get_queryset(self):
+        """Retrieve the word sets for the student"""
+        student = self.request.query_params.get('student')
+        queryset = self.queryset
+        if student:
+            student_id = int(student)
+            queryset = queryset.filter(student__id=student_id)
+
+        return queryset

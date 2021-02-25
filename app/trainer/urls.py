@@ -7,6 +7,7 @@ from trainer import views
 router = DefaultRouter()
 router.register('students', views.StudentViewSet)
 router.register('words', views.WordViewSet)
+router.register('wordsets', views.WordSetViewSet)
 
 app_name = 'trainer'
 

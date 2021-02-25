@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from core.models import Student, Word
+from core.models import Student, Word, WordSet
 
 
 class StudentSerializer(serializers.ModelSerializer):
@@ -21,3 +21,16 @@ class WordSerializer(serializers.ModelSerializer):
         fields = ('id', 'word', 'translate', 'definition',
                   'example', 'student')
         read_only = ('id',)
+
+
+class WordSetSerializer(serializers.ModelSerializer):
+    """Serializer a word set"""
+    words = serializers.PrimaryKeyRelatedField(
+        many=True,
+        queryset=Word.objects.all()
+    )
+
+    class Meta:
+        model = WordSet
+        fields = ('id', 'name', 'student', 'words')
+        read_only = ('id', )
