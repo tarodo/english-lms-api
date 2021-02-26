@@ -13,6 +13,11 @@ from trainer.serializers import StudentSerializer
 STUDENTS_URL = reverse('trainer:student-list')
 
 
+def detail_url(student_id):
+    """Retunr word set detail URL"""
+    return reverse('trainer:student-detail', args=[student_id])
+
+
 class PublicStudentsApiTests(TestCase):
     """Test publicly available students API"""
 
@@ -80,3 +85,34 @@ class PrivateStudentsApiTests(TestCase):
         res = self.client.post(STUDENTS_URL, payload)
 
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_partial_update_student(self):
+        """Test updating student with patch"""
+        student = Student.objects.create(user=self.user, tg_id='111111')
+
+        payload = {'is_teacher': True}
+        url = detail_url(student.id)
+        res = self.client.patch(url, payload)
+
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        student.refresh_from_db()
+        self.assertEqual(student.is_teacher, payload['is_teacher'])
+
+    def test_full_update_student(self):
+        """Test updating a student with put"""
+        student = Student.objects.create(user=self.user, tg_id='111111')
+        payload = {
+            'tg_id': '111111',
+            'first_name': 'ttt',
+            'last_name': 'bbb',
+            'is_teacher': True
+        }
+        url = detail_url(student.id)
+        res = self.client.put(url, payload)
+
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        student.refresh_from_db()
+        self.assertEqual(student.tg_id, payload['tg_id'])
+        self.assertEqual(student.first_name, 'ttt')
+        self.assertEqual(student.last_name, payload['last_name'])
+        self.assertEqual(student.is_teacher, payload['is_teacher'])
