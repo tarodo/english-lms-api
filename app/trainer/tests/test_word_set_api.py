@@ -132,3 +132,36 @@ class PrivateWordSetApiTest(TestCase):
         self.assertEqual(words.count(), 2)
         self.assertIn(word1, words)
         self.assertIn(word2, words)
+
+    def test_partial_update_word_set(self):
+        """Test updating a word set with patch"""
+        word_set = sample_word_set(student=self.student)
+        word_set.words.add(sample_word(student=self.student))
+        new_word = sample_word(student=self.student, word='travel')
+
+        payload = {'name': 'voy-voy', 'words': [new_word.id]}
+        url = detail_url(word_set.id)
+        self.client.patch(url, payload)
+
+        word_set.refresh_from_db()
+        self.assertEqual(word_set.name, payload['name'])
+        words = word_set.words.all()
+        self.assertEqual(len(words), 1)
+        self.assertEqual(new_word, words[0])
+
+    def test_full_update_word_set(self):
+        """Test updating a word set with put"""
+        word_set = sample_word_set(student=self.student)
+        word_set.words.add(sample_word(student=self.student))
+        payload = {
+            'name': 'test_full',
+            'student': self.student.id
+        }
+        url = detail_url(word_set.id)
+        res = self.client.put(url, payload)
+
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        word_set.refresh_from_db()
+        self.assertEqual(word_set.name, payload['name'])
+        words = word_set.words.all()
+        self.assertEqual(len(words), 0)
