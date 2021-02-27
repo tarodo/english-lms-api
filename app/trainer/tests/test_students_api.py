@@ -14,7 +14,7 @@ STUDENTS_URL = reverse('trainer:student-list')
 
 
 def detail_url(student_id):
-    """Retunr word set detail URL"""
+    """Return word set detail URL"""
     return reverse('trainer:student-detail', args=[student_id])
 
 

@@ -10,6 +10,13 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="/app/trainer/tests/test_students_api.py">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="/app/trainer/urls.py">
           <value>
             <Attribute>
