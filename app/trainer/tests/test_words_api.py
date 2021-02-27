@@ -13,6 +13,16 @@ from trainer.serializers import WordSerializer
 WORD_URL = reverse('trainer:word-list')
 
 
+def detail_url(word_id):
+    """Return word detail URL"""
+    return reverse('trainer:word-detail', args=[word_id])
+
+
+def sample_word(student, word='voyage'):
+    """Create and return a sample word"""
+    return Word.objects.create(student=student, word=word)
+
+
 class PublicWordsApiTests(TestCase):
     """Test the publicly available words API"""
 
@@ -110,3 +120,13 @@ class PrivateWordsApiTests(TestCase):
         res = self.client.post(WORD_URL, payload)
 
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_view_word_detail(self):
+        """Test viewing a word detail"""
+        word = sample_word(student=self.student)
+
+        url = detail_url(word.id)
+        res = self.client.get(url)
+
+        serializer = WordSerializer(word)
+        self.assertEqual(res.data, serializer.data)

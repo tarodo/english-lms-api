@@ -1,4 +1,4 @@
-from rest_framework import viewsets, mixins
+from rest_framework import viewsets
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 
@@ -7,10 +7,7 @@ from core.models import Student, Word, WordSet
 from trainer import serializers
 
 
-class StudentViewSet(viewsets.GenericViewSet,
-                     mixins.ListModelMixin,
-                     mixins.CreateModelMixin,
-                     mixins.UpdateModelMixin):
+class StudentViewSet(viewsets.ModelViewSet):
     """Manage students in the database"""
     authentication_classes = (TokenAuthentication, )
     permission_classes = (IsAuthenticated, )
@@ -21,17 +18,8 @@ class StudentViewSet(viewsets.GenericViewSet,
         """Create a new student"""
         serializer.save(user=self.request.user)
 
-    def get_serializer_class(self):
-        """Return appropriate serializer class"""
-        if self.action == 'retrieve':
-            return serializers.StudentDetailSerializer
 
-        return self.serializer_class
-
-
-class WordViewSet(viewsets.GenericViewSet,
-                  mixins.ListModelMixin,
-                  mixins.CreateModelMixin):
+class WordViewSet(viewsets.ModelViewSet):
     """Manage words in the database"""
     authentication_classes = (TokenAuthentication, )
     permission_classes = (IsAuthenticated, )

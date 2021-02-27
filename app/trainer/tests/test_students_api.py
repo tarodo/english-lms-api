@@ -116,3 +116,13 @@ class PrivateStudentsApiTests(TestCase):
         self.assertEqual(student.first_name, 'ttt')
         self.assertEqual(student.last_name, payload['last_name'])
         self.assertEqual(student.is_teacher, payload['is_teacher'])
+
+    def test_view_student_detail(self):
+        """Test viewing a word detail"""
+        student = Student.objects.create(user=self.user, tg_id='111111')
+
+        url = detail_url(student.id)
+        res = self.client.get(url)
+
+        serializer = StudentSerializer(student)
+        self.assertEqual(res.data, serializer.data)
