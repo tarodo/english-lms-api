@@ -14,6 +14,15 @@ class StudentViewSet(viewsets.ModelViewSet):
     queryset = Student.objects.all()
     serializer_class = serializers.StudentSerializer
 
+    def get_queryset(self):
+        """Return the students by telegram id"""
+        tg_id = self.request.query_params.get('tg_id')
+        queryset = self.queryset
+        if tg_id:
+            queryset = queryset.filter(tg_id=tg_id)
+
+        return queryset
+
     def perform_create(self, serializer):
         """Create a new student"""
         serializer.save(user=self.request.user)
@@ -55,9 +64,14 @@ class WordSetViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         """Retrieve the word sets for the student"""
         student = self.request.query_params.get('student')
+        tg_id = self.request.query_params.get('tg_id')
         queryset = self.queryset.order_by('id')
         if student:
             student_id = int(student)
+            queryset = queryset.filter(student__id=student_id)
+        if tg_id:
+            print(tg_id)
+            student_id = Student.objects.get(tg_id=tg_id)
             queryset = queryset.filter(student__id=student_id)
 
         return queryset

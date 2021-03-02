@@ -77,7 +77,7 @@ class WordSet(models.Model):
     name = models.CharField(max_length=255)
     student = models.ForeignKey(
         Student,
-        on_delete=models.CASCADE,
+        on_delete=models.CASCADE
     )
     words = models.ManyToManyField('Word')
 

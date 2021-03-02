@@ -111,9 +111,6 @@ class PrivateWordSetApiTest(TestCase):
         res = self.client.post(WORD_SET_URL, payload)
 
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
-        # word_set = WordSet.objects.get(id=res.data['id'])
-        # for key in payload.keys():
-        #     self.assertEqual(payload[key], getattr(word_set, key))
 
     def test_create_word_set_with_words(self):
         """Test creating a word set with words"""
