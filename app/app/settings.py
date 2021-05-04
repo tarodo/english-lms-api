@@ -27,7 +27,7 @@ SECRET_KEY = '^2e(*z(3j0*rks4xtyq3*kcso7!5jzjuqutc=@%w3q^2kist5u'
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS.append(os.environ.get('MY_HOST'))
 
 # Application definition
 
@@ -88,6 +88,7 @@ DATABASES = {
         'PASSWORD': os.environ.get('DB_PASS'),
     }
 }
+
 
 
 # Password validation
